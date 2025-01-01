@@ -1,3 +1,16 @@
+<?php
+session_start();
+require_once './server/LineLogin.php';
+
+$line = new LineLogin();
+$link = ''; // Initialize the $link variable in case there's an issue
+
+if (!isset($_SESSION['profile'])) {
+    // If session profile is not set, generate the Line login link
+    $link = $line->getLink();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="th">
 
@@ -6,9 +19,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เข้าสู่ระบบ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js" crossorigin="anonymous"></script>
+    
+    <?php require_once './script/script.js'?>
 </head>
 
 <style>
@@ -101,10 +113,14 @@
                             <!-- Submit button -->
                             <button type="submit" class="btn btn-primary btn-custom mb-3">เข้าสู่ระบบ</button>
 
-                            <!-- Line login button -->
-                            <a href="#!" class="btn btn-line btn-custom mb-3">
-                                <i class="fa-brands fa-line"></i> เข้าสู่ระบบด้วย Line
-                            </a>
+                            <?php
+                                // Check if profile is set in session, then display the Line login link
+                                if (empty($_SESSION['profile'])) {
+                                    echo '<a href="' . $link . '" class="btn btn-line btn-custom mb-3">';
+                                    echo '<i class="fa-brands fa-line"></i> เข้าสู่ระบบด้วย Line';
+                                    echo '</a>';
+                                }
+                            ?>
                         </form>
                     </div>
                 </div>
