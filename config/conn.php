@@ -1,6 +1,6 @@
 <?php
 $host = "localhost";
-$db = "access_system";
+$db = "attendance_db";
 $user = "root";
 $password = "";
 
