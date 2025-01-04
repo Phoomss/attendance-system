@@ -16,25 +16,25 @@ class LineLogin
     private function saveUser($profile)
     {
         global $conn;
-    
+
         // ตรวจสอบว่า email มีค่าหรือไม่
         if (empty($profile->email)) {
             die('Email is required but not provided in profile.');
-        }        
-    
+        }
+
         // ตรวจสอบว่า profile->role มีค่าหรือไม่ หากไม่มีจะตั้งค่า default เป็น 'employee'
         if (empty($profile->role)) {
             $profile->role = 'employee';
         }
-    
+
         // ตรวจสอบว่าผู้ใช้อยู่ในฐานข้อมูลแล้วหรือยัง
         $stmt = $conn->prepare("SELECT id FROM users WHERE email = :email");
         $stmt->bindParam(':email', $profile->email);
         $stmt->execute();
-    
+
         if ($stmt->rowCount() > 0) {
             // User exists, so update the user's information
-            $stmt = $conn->prepare("UPDATE users SET title = :title, firstname = :firstname, surname = :surname, name = :name, picture = :picture, access_token = :access_token, refresh_token = :refresh_token, role = :role WHERE email = :email");
+            $stmt = $conn->prepare("UPDATE users SET title = :title, firstname = :firstname, surname = :surname, name = :name, username = :username,picture = :picture, access_token = :access_token, refresh_token = :refresh_token, role = :role WHERE email = :email");
 
             // Bind the profile data to the query parameters
             $stmt->bindParam(':title', $profile->title);
@@ -46,17 +46,19 @@ class LineLogin
             $stmt->bindParam(':refresh_token', $profile->refresh_token);
             $stmt->bindParam(':role', $profile->role);  // Correct use of role
             $stmt->bindParam(':email', $profile->email);
+            $stmt->bindParam(':username', $profile->username);
             $stmt->execute();
         } else {
             // User doesn't exist, so insert a new user
-            $stmt = $conn->prepare("INSERT INTO users (title, firstname, surname, name, email, picture, access_token, refresh_token, role) 
-            VALUES (:title, :firstname, :surname, :name, :email, :picture, :access_token, :refresh_token, :role)");
+            $stmt = $conn->prepare("INSERT INTO users (title, firstname, surname, name,username, email, picture, access_token, refresh_token, role) 
+            VALUES (:title, :firstname, :surname, :name,:username, :email, :picture, :access_token, :refresh_token, :role)");
 
             // Bind the profile data to the query parameters
             $stmt->bindParam(':title', $profile->title);
             $stmt->bindParam(':firstname', $profile->firstname);
             $stmt->bindParam(':surname', $profile->surname);
             $stmt->bindParam(':name', $profile->name);
+            $stmt->bindParam(':username', $profile->username);
             $stmt->bindParam(':email', $profile->email);
             $stmt->bindParam(':picture', $profile->picture);
             $stmt->bindParam(':access_token', $profile->access_token);
@@ -66,7 +68,7 @@ class LineLogin
         }
         $stmt->execute();
     }
-    
+
     function getLink()
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -98,11 +100,11 @@ class LineLogin
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-    
+
         if ($_SESSION['state'] != $state) {
             return false;
         }
-    
+
         $header = ['Content-Type: application/x-www-form-urlencoded'];
         $data = [
             "grant_type" => "authorization_code",
@@ -111,17 +113,17 @@ class LineLogin
             "client_id" => self::CLIENT_ID,
             "client_secret" => self::CLIENT_SECRET
         ];
-    
+
         $response = $this->sendCURL(self::TOKEN_URL, $header, 'POST', $data);
         $token = json_decode($response);
-    
+
         if (isset($token->id_token)) {
             $profile = $this->profileFormIdToken($token);
             $this->saveUser($profile); // บันทึกข้อมูลลงฐานข้อมูล
         }
-    
+
         return $token;
-    }    
+    }
 
     function profileFormIdToken($token = null)
     {

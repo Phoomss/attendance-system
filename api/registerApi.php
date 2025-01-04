@@ -13,6 +13,7 @@ $auth = new Auth($db);
 $auth->title = $_POST['title'];
 $auth->firstname = $_POST['firstname'];
 $auth->surname = $_POST['surname'];
+$auth->username = $_POST['username'];
 $auth->email = $_POST['email'];
 $auth->password = $_POST['password'];
 
@@ -20,13 +21,13 @@ $auth->password = $_POST['password'];
 if ($auth->register()) {
     echo json_encode([
         "success" => true,
-        "message" => "Register successful",
+        "message" => "ลงทะเบียนสำเร็จ",
         "status_code" => 200,
     ]);
 } else {
     echo json_encode([
         "success" => false,
-        "message" => "Register failed",
+        "message" => "ลงทะเบียนไม่สำเร็จ",
         "status_code" => 500,
     ]);
 }

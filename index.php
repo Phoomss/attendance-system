@@ -103,17 +103,17 @@ if (!isset($_SESSION['profile'])) {
                 <div class="col-md-6 col-lg-5">
                     <div class="login-container">
                         <h2 class="text-center">เข้าสู่ระบบ</h2>
-                        <form>
-                            <!-- Username input -->
+                        <form id="loginForm">
+                            <!-- Username or Email input -->
                             <div class="input-group mb-3">
-                                <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-                                <input type="text" class="form-control" placeholder="อีเมล" aria-label="Email">
+                                <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                                <input type="text" id="identifier" name="identifier" class="form-control" placeholder="อีเมล หรือ ชื่อผู้ใช้" aria-label="Email or Username" required>
                             </div>
 
                             <!-- Password input -->
                             <div class="input-group mb-4">
                                 <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                                <input type="password" class="form-control" placeholder="รหัสผ่าน" aria-label="Password">
+                                <input type="password" id="password" name="password" class="form-control" placeholder="รหัสผ่าน" aria-label="Password" required>
                             </div>
 
                             <div class="mb-4 text-center">
@@ -125,7 +125,7 @@ if (!isset($_SESSION['profile'])) {
 
                             <?php
                             if (empty($_SESSION['profile'])) {
-                                echo '<a href="' . $link . '" class="btn btn-line btn-custom">'; 
+                                echo '<a href="' . $link . '" class="btn btn-line btn-custom">';
                                 echo '<i class="fa-brands fa-line me-2"></i> เข้าสู่ระบบด้วย Line';
                                 echo '</a>';
                             }
@@ -141,6 +141,47 @@ if (!isset($_SESSION['profile'])) {
             </div>
         </div>
     </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#loginForm").on('submit', function(e) {
+                e.preventDefault();
+                var identifier = $('#identifier').val();
+                var password = $('#password').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: './api/loginApi.php',
+                    data: {
+                        identifier: identifier,
+                        password: password
+                    },
+                    success: function(response) {
+                        try {
+                            const res = JSON.parse(response);
+                            if (res.status_code === 200) {
+                                if (res.role === 'admin') {
+                                    window.location.href = './frontend/admin/index.php';
+                                } else if (res.role === 'employee') {
+                                    window.location.href = './frontend/employee/index.php';
+                                } else {
+                                    window.location.reload();
+                                }
+                            } else {
+                                alert(res.message || 'เข้าสู่ระบบไม่สำเร็จ');
+                            }
+                        } catch (e) {
+                            alert('ข้อมูลที่ได้รับจากเซิร์ฟเวอร์ไม่ถูกต้อง');
+                        }
+                    },
+                    error: function() {
+                        alert('เกิดข้อผิดพลาด');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -100,6 +100,12 @@
                             <div class="mb-3">
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                                    <input id="username" type="text" name="username" class="form-control" placeholder="ชื่อผู้ใช้งาน" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
                                     <input id="email" type="email" name="email" class="form-control" placeholder="อีเมล" required>
                                 </div>
                             </div>
@@ -128,6 +134,7 @@
                     'title': $('#title').val(),
                     'firstname': $('#firstname').val(),
                     'surname': $('#surname').val(),
+                    'username': $('#username').val(),
                     'email': $('#email').val(),
                     'password': $('#password').val()
                 };
