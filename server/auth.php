@@ -135,6 +135,6 @@ class Auth
             exit(); // ป้องกันการทำงานต่อหลังจาก redirect
         }
 
-        // print_r($_SESSION['userInfo']); // ถ้าต้องการตรวจสอบข้อมูล
+        print_r($_SESSION['userInfo']); // ถ้าต้องการตรวจสอบข้อมูล
     }
 }

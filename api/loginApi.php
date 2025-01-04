@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user_data = $auth->login($identifier, $password);
 
         if ($user_data['success']) {
+            $_SESSION['userInfo'] = $user_data['data'];
             $_SESSION['user_id'] = $user_data['data']['id'];
             $_SESSION['username'] = $user_data['data']['username'];
             $_SESSION['email'] = $user_data['data']['email'];
