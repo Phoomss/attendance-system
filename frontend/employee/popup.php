@@ -1,34 +1,26 @@
 <div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="welcomeModalLabel">Welcome to the System</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>You've successfully logged in! Please complete your profile information.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="profile.php" class="btn btn-primary">Go to Profile</a>
-                </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- ส่วนหัวของ Modal -->
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="welcomeModalLabel">ยินดีต้อนรับสู่ระบบของเรา</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- เนื้อหา Modal -->
+            <div class="modal-body">
+                <p class="text-muted">ขอบคุณที่เข้าสู่ระบบ กรุณากรอกข้อมูลส่วนตัวของคุณให้ครบถ้วน เพื่อให้การใช้งานระบบสมบูรณ์ที่สุด ขอขอบคุณสำหรับความร่วมมือ</p>
+            </div>
+            <!-- ส่วนท้ายของ Modal -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ปิด</button>
+                <a href="profile.php" class="btn btn-primary">ไปที่ข้อมูลส่วนตัว</a>
             </div>
         </div>
     </div>
-
-    <!-- Page Content -->
-    <main class="container">
-        <div class="bg-light p-5 rounded">
-            <h1>Welcome, <?php echo htmlspecialchars($userData['name']); ?></h1>
-            <p class="lead">Your email: <?php echo htmlspecialchars($userData['email']); ?></p>
-            <p>Your role: <?php echo htmlspecialchars($userData['role']); ?></p>
-            <img src="<?php echo htmlspecialchars($userData['picture']); ?>" class="rounded" alt="profile img">
-        </div>
-    </main>
-
-    <!-- Script to trigger the modal -->
-    <script>
-        // Trigger modal when page loads
-        var modal = new bootstrap.Modal(document.getElementById('welcomeModal'));
-        modal.show();
-    </script>
+</div>
+<!-- สคริปต์สำหรับเปิด Modal -->
+<script>
+    // เปิด Modal เมื่อโหลดหน้า
+    var modal = new bootstrap.Modal(document.getElementById('welcomeModal'));
+    modal.show();
+</script>
