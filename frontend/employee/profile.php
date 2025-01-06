@@ -102,8 +102,17 @@ if (!$userData) {
                                         <input class="form-control" type="text" placeholder="ชื่อผู้ใช้งาน" aria-label="Username">
                                     </div>
                                 </div>
-                                <!-- Password -->
+                                <!-- phone -->
                                 <div class="col-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="username">เบอร์โทร</span>
+                                        <input class="form-control" type="text" placeholder="เบอร์โทร" aria-label="phone">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <!-- Password -->
+                                <div class="col-12">
                                     <div class="input-group">
                                         <span class="input-group-text" id="password">รหัสผ่าน</span>
                                         <input class="form-control" type="password" placeholder="รหัสผ่าน" aria-label="Password">
@@ -118,7 +127,10 @@ if (!$userData) {
         </div>
     </main>
 
-  
+    <script>
+        
+    </script>
+
 </body>
 
 </html>
