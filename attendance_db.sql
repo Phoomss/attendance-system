@@ -62,6 +62,7 @@ CREATE TABLE `users` (
   `firstname` varchar(100) DEFAULT NULL,
   `surname` varchar(100) DEFAULT NULL,
   `name` varchar(200) DEFAULT NULL,
+  'username' VARCHAR(200) DEFAULT NULL
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `role` enum('admin','employee') DEFAULT 'employee',
