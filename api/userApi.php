@@ -1,6 +1,6 @@
 <?php
 require_once '../server/conn.php';
-require_once '../server/attendance.php';
+require_once '../server/user.php';
 
 session_start();
 

@@ -144,7 +144,7 @@ class User
         if (!empty($this->password)) {
             $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
             $stmt->bindParam(':password', $hashedPassword);
-        }
+        }       
     
         try {
             if ($stmt->execute()) {
