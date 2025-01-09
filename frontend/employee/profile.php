@@ -63,7 +63,7 @@ if (!$userData) {
                         <h5 class="card-title mb-3">ข้อมูลส่วนตัว</h5>
                         <form id="profileForm">
                             <div class="mb-3">
-                                <p><?php echo htmlspecialchars($userData['id']) ?></p>
+                                <!-- <p><?php echo htmlspecialchars($userData['id']) ?></p> -->
                                 <label for="title" class="form-label">คำนำหน้า</label>
                                 <select class="form-select" id="title" name="title" required>
                                     <option value="นาย" <?php echo ($userData['title'] === 'นาย') ? 'selected' : ''; ?>>นาย</option>
