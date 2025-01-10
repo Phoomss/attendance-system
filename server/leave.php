@@ -19,11 +19,6 @@ class Leave {
         $query = "INSERT INTO " . $this->table_name . " (employee_id, leave_type, leave_date, reason) VALUES (:employee_id, :leave_type, :leave_date, :reason)";
         $stmt = $this->conn->prepare($query);
 
-        // ตรวจสอบค่าที่รับเข้ามาจากผู้ใช้
-        if (empty($this->employee_id) || empty($this->leave_type) || empty($this->leave_date) || empty($this->reason)) {
-            throw new Exception("ข้อมูลไม่ครบถ้วน");
-        }
-
         // ผูกค่าตัวแปร
         $stmt->bindParam(':employee_id', $this->employee_id, PDO::PARAM_INT);
         $stmt->bindParam(':leave_type', $this->leave_type, PDO::PARAM_STR);

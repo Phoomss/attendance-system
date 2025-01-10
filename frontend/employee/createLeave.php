@@ -12,6 +12,14 @@
             </div>
             <div class="modal-body">
                 <form id="leaveForm">
+                    <!-- ชื่อ-นามสกุล -->
+                    <div class="mb-3">
+                        <label for="employee_name" class="form-label">ชื่อ-นามสกุล</label>
+                        <input type="hidden" id="employee_id" name="employee_id" value="<?php echo htmlentities($userData['id']); ?>">
+                        <input type="text" class="form-control" id="employee_name" name="employee_name"
+                            value="<?php echo htmlentities($userData['title'] . ' ' . $userData['firstname'] . ' ' . $userData['surname']); ?>"
+                            readonly>
+                    </div>
                     <!-- ประเภทการลา -->
                     <div class="mb-3">
                         <label for="leave_type" class="form-label">ประเภทการลา</label>
@@ -27,8 +35,8 @@
                     </div>
                     <!-- เหตุผลการลา -->
                     <div class="mb-3">
-                        <label for="leave_reason" class="form-label">เหตุผลการลา</label>
-                        <textarea class="form-control" id="leave_reason" name="leave_reason" rows="3" required></textarea>
+                        <label for="reason" class="form-label">เหตุผลการลา</label>
+                        <textarea class="form-control" id="reason" name="reason" rows="3" required></textarea>
                     </div>
                 </form>
             </div>
@@ -39,3 +47,55 @@
         </div>
     </div>
 </div>
+
+<script>
+    jQuery(document).ready(function($) {
+        $('#saveLeaveBtn').on('click', function(e) {
+            e.preventDefault();
+
+            var formData = {
+                action: 'create',
+                employee_id: $('#employee_id').val(),
+                leave_type: $('#leave_type').val(),
+                leave_date: $('#leave_date').val(),
+                reason: $('#reason').val(),
+            };
+            console.log(formData)
+            $.ajax({
+                type: "POST",
+                url: "../../api/leaveApi.php",
+                data: formData,
+                dataType: "json",
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'สำเร็จ',
+                            text: response.message,
+                            confirmButtonText: 'ตกลง',
+                        }).then(() => {
+                            // Reset form and close modal
+                            $('#leaveForm')[0].reset();
+                            $('#leaveModel').modal('hide');
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ข้อผิดพลาด',
+                            text: response.message,
+                            confirmButtonText: 'ตกลง',
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ข้อผิดพลาด',
+                        text: 'เกิดข้อผิดพลาดในการส่งข้อมูล',
+                        confirmButtonText: 'ตกลง',
+                    });
+                },
+            });
+        });
+    });
+</script>

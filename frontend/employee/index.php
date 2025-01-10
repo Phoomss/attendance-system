@@ -13,7 +13,7 @@ $profile = $_SESSION['profile'];
 // var_dump($profile);
 
 // ดึงข้อมูลผู้ใช้จากฐานข้อมูลโดยใช้ email จาก profile
-$stmt = $conn->prepare("SELECT id, name, email, picture, role FROM users WHERE email = :email");
+$stmt = $conn->prepare("SELECT id,title,firstname,surname, name,username,phone, email, picture, role FROM users WHERE email = :email");
 $stmt->bindParam(':email', $profile->email);
 $stmt->execute();
 $userData = $stmt->fetch(PDO::FETCH_ASSOC);
