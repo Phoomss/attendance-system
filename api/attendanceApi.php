@@ -14,8 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($action === 'create') {
             $attendance->employee_id = $_POST['employee_id'];
+            $attendance->attendance_date = $_POST['attendance_date'];
             $attendance->attendance_time = $_POST['attendance_time'];
-            $attendance->departure_time = $_POST['departure_time'];
+            // $attendance->departure_time = $_POST['departure_time'];
 
             $stmt = $attendance->create();
 
@@ -35,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else if ($action === 'update') {
             $attendance->id = $_POST['id'];
             $attendance->employee_id = $_POST['employee_id'];
+            $attendance->attendance_date = $_POST['attendance_date'];
             $attendance->attendance_time = $_POST['attendance_time'];
             $attendance->departure_time = $_POST['departure_time'];
 
@@ -70,6 +72,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     "status_code" => 500,
                 ]);
             }
+        } else if ($action === "checkAttendance") {
+            $employee_id = $_POST['employee_id'];
+
+            // เรียกใช้ฟังก์ชัน checkAttendance
+            $attendanceStatus = $attendance->checkAttendance($employee_id);
+
+            // ส่งผลลัพธ์กลับไปยัง client
+            echo json_encode($attendanceStatus);
+        }
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['action'])) {
+        $action = $_GET['action'];
+
+        if ($action === 'getLatest') {
+            $attendance->id = $_GET['id'];
+            $stmt = $attendance->readInfo($_GET['id']);
+
+            if ($stmt->num_rows > 0) {
+                $data = $stmt->fetch_assoc();
+                echo json_encode(['success' => true, 'data' => $data]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'ไม่พบข้อมูลล่าสุด']);
+            }
+            exit();
         }
     }
 }

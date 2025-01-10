@@ -67,7 +67,8 @@ if (!$userData) {
                     </div>
                     <div class="card-body">
                         <div class="row mb-4">
-                            <?php require_once 'createAttendance.php' ?>
+                            <?php require_once 'attendanceCreate.php' ?>
+                            <?php require_once 'attendanceUpdate.php' ?>
                             <?php require_once 'createLeave.php' ?>
                         </div>
 
@@ -80,26 +81,6 @@ if (!$userData) {
             </div>
         </div>
     </main>
-
-    <script>
-        // ฟังก์ชันที่ตรวจสอบเวลา
-        function checkTimeToShowDeparture() {
-            var currentTime = new Date();
-            var currentHour = currentTime.getHours(); // ชั่วโมงปัจจุบัน
-            var currentMinute = currentTime.getMinutes(); // นาทีปัจจุบัน
-
-            // ถ้าเวลาปัจจุบันถึง 17:00 แสดงช่องเวลาออก
-            if (currentHour >= 20 && (currentHour > 20 || currentMinute >= 0)) {
-                document.getElementById('departureTimeWrapper').style.display = 'block';
-            }
-        }
-
-        // เมื่อ modal ถูกเปิด
-        document.getElementById('attendanceModel').addEventListener('shown.bs.modal', function() {
-            // เรียกฟังก์ชันตรวจสอบเวลาเมื่อ modal เปิด
-            checkTimeToShowDeparture();
-        });
-    </script>
 </body>
 
 </html>
