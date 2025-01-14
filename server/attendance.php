@@ -90,7 +90,7 @@ class Attendance
             $query = "SELECT *
                       FROM " . $this->table_name . "
                       WHERE employee_id = :id
-                      ORDER BY created_at DESC
+                      ORDER BY attendance_date DESC
                       LIMIT 1";
             
             // Prepare SQL statement

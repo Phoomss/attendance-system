@@ -36,10 +36,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else if ($action === 'update') {
             $attendance->id = $_POST['id'];
             $attendance->employee_id = $_POST['employee_id'];
-            $attendance->attendance_date = $_POST['attendance_date'];
-            $attendance->attendance_time = $_POST['attendance_time'];
-            $attendance->departure_time = $_POST['departure_time'];
 
+            // Assuming departure_time comes in 'HH:MM' format, append the current date
+            $departure_time = $_POST['departure_time'];
+            $formatted_departure_time = date('Y-m-d') . ' ' . $departure_time;  // Format to 'YYYY-MM-DD HH:MM'
+
+            $attendance->departure_time = $formatted_departure_time;  // Pass the formatted time
+
+            // Update the attendance record
             $stmt = $attendance->update();
 
             if ($stmt) {
@@ -82,21 +86,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode($attendanceStatus);
         }
     }
-} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if (isset($_GET['action'])) {
-        $action = $_GET['action'];
-    
-        if ($action === 'getLatest') {
-            $attendance->id = $_GET['id'];
-            $data = $attendance->readInfo($_GET['id']);
-    
-            if ($data) {
-                echo json_encode(['success' => true, 'data' => $data]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'ไม่พบข้อมูลล่าสุด']);
-            }
-            exit();
-        }
-    }
-    
 }
