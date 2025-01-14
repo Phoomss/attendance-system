@@ -2,6 +2,7 @@
 session_start();
 require_once '../../server/LineLogin.php';
 require_once '../../server/conn.php';
+require_once '../../server/attendance.php';
 
 if (!isset($_SESSION['profile'])) {
     header("location: ../index.php");

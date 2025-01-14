@@ -84,33 +84,34 @@ class Attendance
             die("เกิดข้อผิดพลาดในการดึงข้อมูล: " . $e->getMessage());
         }
     }
-
     public function readInfo($id)
     {
         try {
-            $query = "SELECT * 
-                      FROM " . $this->table_name . " 
-                      WHERE id = :id 
-                      ORDER BY created_at DESC 
+            $query = "SELECT *
+                      FROM " . $this->table_name . "
+                      WHERE employee_id = :id
+                      ORDER BY created_at DESC
                       LIMIT 1";
-    
-            // เตรียมคำสั่ง SQL
+            
+            // Prepare SQL statement
             $stmt = $this->conn->prepare($query);
             
-            // ผูกค่าพารามิเตอร์
+            // Bind parameters
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    
-            // เรียกใช้งานคำสั่ง SQL
+            
+            // Execute query
             $stmt->execute();
-    
-            // ดึงข้อมูล
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Fetch result
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            return $result ?: false; // Return result or false if no data found
+            
         } catch (PDOException $e) {
-            // หากเกิดข้อผิดพลาดในการเชื่อมต่อหรือการ query ให้จับข้อผิดพลาดและแสดงข้อความ
             return ["error" => "เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล: " . $e->getMessage()];
         }
     }    
-
+    
     public function checkAttendance($employee_id) {
         try {
             $attendance_date = date('Y-m-d'); // วันที่ปัจจุบัน
@@ -142,31 +143,23 @@ class Attendance
 
     public function update()
     {
-        // สร้างคำสั่ง SQL สำหรับการอัพเดทข้อมูล
         $query = "UPDATE " . $this->table_name . " 
-        SET employee_id = :employee_id,attendance_date = :attendance_date, attendance_time = :attendance_time, departure_time = :departure_time 
-        WHERE id = :id";
-
+                  SET departure_time = :departure_time
+                  WHERE id = :id";
         $stmt = $this->conn->prepare($query);
 
-        // ตรวจสอบค่าที่ได้รับจากผู้ใช้
-        if (empty($this->id) || empty($this->employee_id)) {
-            throw new Exception("ข้อมูลไม่ครบถ้วน");
+        if (empty($this->departure_time) || empty($this->id)) {
+            throw new Exception("ข้อมูลไม่ครบถ้วนสำหรับการแก้ไข");
         }
 
-        // ผูกค่าตัวแปร
-        $stmt->bindParam(':employee_id', $this->employee_id, PDO::PARAM_INT);
-        $stmt->bindParam(':attendance_date', $this->attendance_date, PDO::PARAM_STR);
-        $stmt->bindParam(':attendance_time', $this->attendance_time, PDO::PARAM_STR);
         $stmt->bindParam(':departure_time', $this->departure_time, PDO::PARAM_STR);
         $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
 
-        try {
-            $stmt->execute();
-            return $stmt;
-        } catch (PDOException $e) {
-            die("เกิดข้อผิดพลาดในการอัพเดทข้อมูล: " . $e->getMessage());
+        if ($stmt->execute()) {
+            return true;
         }
+
+        return false;
     }
 
     public function delete()

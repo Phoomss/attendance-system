@@ -85,13 +85,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['action'])) {
         $action = $_GET['action'];
-
+    
         if ($action === 'getLatest') {
             $attendance->id = $_GET['id'];
-            $stmt = $attendance->readInfo($_GET['id']);
-
-            if ($stmt->num_rows > 0) {
-                $data = $stmt->fetch_assoc();
+            $data = $attendance->readInfo($_GET['id']);
+    
+            if ($data) {
                 echo json_encode(['success' => true, 'data' => $data]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'ไม่พบข้อมูลล่าสุด']);
@@ -99,4 +98,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
     }
+    
 }

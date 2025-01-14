@@ -20,15 +20,19 @@
                             value="<?php echo htmlentities($userData['title'] . ' ' . $userData['firstname'] . ' ' . $userData['surname']); ?>"
                             readonly>
                     </div>
-                    ช่องเลือกวันที่
+                    <!-- ช่องเลือกวันที่ -->
                     <div class="mb-3">
                         <label for="attendance_date" class="form-label">วันที่</label>
                         <input type="date" class="form-control" id="attendance_date" name="attendance_date" required>
                     </div>
-                    <!-- เวลาออก -->
-                    <div class="mb-3 d-none" id="departureTimeWrapper">
+                    <!-- เวลาเข้า -->
+                    <div class="mb-3">
+                        <label for="attendance_time" class="form-label">เวลาเข้า</label>
+                        <input type="time" class="form-control" id="attendance_time" name="attendance_time" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="departure_time" class="form-label">เวลาออก</label>
-                        <input type="time" class="form-control" id="departure_time" name="departure_time">
+                        <input type="time" class="form-control" id="departure_time" name="departure_time" required>
                     </div>
                 </form>
             </div>
@@ -54,9 +58,9 @@
     // ฟังก์ชันตรวจสอบเวลา
     function checkTimeToShowButton() {
         const currentTime = new Date();
-        
-        // ถ้าเวลามากกว่าหรือเท่ากับ 17:00 แสดงปุ่ม
-        if (currentTime.getHours() >17) {
+
+        // ถ้าเวลามากกว่าหรือเท่ากับ 12:00 แสดงปุ่ม
+        if (currentTime.getHours() >= 12) {
             document.getElementById('departureButton').style.display = 'block';
         } else {
             document.getElementById('departureButton').style.display = 'none';
@@ -64,46 +68,57 @@
     }
 
     window.onload = checkTimeToShowButton;
-    // เมื่อ modal ถูกเปิด
-    document.getElementById('departureModel').addEventListener('shown.bs.modal', function() {
-        checkTimeToShowDeparture();
 
-        // ตรวจสอบว่าผู้ใช้ลงเวลาเข้าแล้วหรือยัง
-        $.ajax({
-            type: "POST",
-            url: "../../api/attendanceApi.php",
-            data: {
-                action: 'checkAttendance',
-                employee_id: $('#employee_id').val(),
-            },
-            dataType: "json",
-            success: function(response) {
-                // ถ้ามีการลงเวลาแล้วในวันที่ปัจจุบัน
-                if (response.exists) {
-                    $('#saveAttendanceBtn').prop('disabled', true); // ทำให้ปุ่มบันทึกไม่สามารถคลิกได้
-                    $('#saveAttendanceBtn').text('บันทึกเวลาออกงานแล้ว'); // เปลี่ยนข้อความของปุ่ม
-                } else {
-                    $('#saveAttendanceBtn').prop('disabled', false); // ทำให้ปุ่มบันทึกคลิกได้
-                    $('#saveAttendanceBtn').text('บันทึก'); // เปลี่ยนข้อความของปุ่มกลับ
+    $(document).ready(function() {
+        $('#departureButton').click(function() {
+            const employeeId = $('#employee_id').val();
+            console.log("Employee ID:", employeeId);
+
+            $.ajax({
+                url: `http://127.0.0.1/attendance-system/api/attendanceApi.php?action=getLatest&id=${employeeId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log("Raw API response:", JSON.stringify(data));
+
+                    if (data.success && data.data) {
+                        const fetchData = data.data;
+                        console.log("Processed data:", fetchData);
+
+                        // กำหนดค่าฟอร์มเมื่อได้ข้อมูลจาก API
+                        $('#attendance_date').val(formatDate(fetchData.attendance_date));
+                        $('#attendance_time').val(formatTime(fetchData.attendance_time));
+                        $('#departure_time').val(formatTime(fetchData.departure_time));
+                    } else {
+                        console.log("No data or error:", data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
                 }
-            },
-            error: function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'ข้อผิดพลาด',
-                    text: 'เกิดข้อผิดพลาดในการตรวจสอบข้อมูล',
-                    confirmButtonText: 'ตกลง',
-                });
-            }
+            });
         });
+
+        // ฟังก์ชันแปลงรูปแบบวันที่
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toISOString().split('T')[0]; // คืนค่าในรูปแบบ YYYY-MM-DD
+        }
+
+        // ฟังก์ชันแปลงรูปแบบเวลา
+        function formatTime(timeStr) {
+            return timeStr ? timeStr.substring(0, 5) : ''; // คืนค่าในรูปแบบ HH:MM
+        }
     });
 
+
+    // update form
     jQuery(document).ready(function($) {
         $('#saveAttendanceBtn').on('click', function(e) {
             e.preventDefault();
 
             // Validate form
-            if (!$('#attendance_date').val() || !$('#attendance_time').val()) {
+            if (!$('#attendance_date').val() || !$('#attendance_time').val() || !$('#departure_time').val()) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
