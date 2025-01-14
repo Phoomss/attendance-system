@@ -27,7 +27,7 @@ class DetailWork
                                  INNER JOIN " . $this->table_attendances . " a ON u.id = a.employee_id
                                  WHERE u.id = :employee_id
                                  ORDER BY a.attendance_date DESC
-                                 LIMIT 5";
+                                 LIMIT 10";
             $attendanceStmt = $this->conn->prepare($attendanceQuery);
             $attendanceStmt->bindParam(':employee_id', $employee_id);
             $attendanceStmt->execute();
