@@ -162,7 +162,7 @@ if (!isset($_SESSION['profile'])) {
                             const res = JSON.parse(response);
                             if (res.status_code === 200) {
                                 if (res.role === 'admin') {
-                                    window.location.href = './frontend/admin/index.php';
+                                    window.location.href = './frontend/admin/admin_dashboard.php';
                                 } else if (res.role === 'employee') {
                                     window.location.href = './frontend/employee/index.php';
                                 } else {

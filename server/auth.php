@@ -31,7 +31,6 @@ class Auth
             if ($stmt->rowCount() > 0) {
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 if (password_verify($password, $user['password'])) {
-                    // ตรวจสอบรหัสผ่านสำเร็จ
                     return [
                         'success' => true,
                         'message' => 'เข้าสู่ระบบสำเร็จ',
