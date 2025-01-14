@@ -139,6 +139,36 @@ class Attendance
             // หากเกิดข้อผิดพลาดในการเชื่อมต่อหรือการ query ให้จับข้อผิดพลาดและแสดงข้อความ
             return ["error" => "เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล: " . $e->getMessage()];
         }
+    } 
+    
+    public function checkDeparture($employee_id) {
+        try {
+            // Get today's date in the format YYYY-MM-DD
+            $today = date('Y-m-d');
+            
+            // SQL query to check if the employee has already recorded a departure time today
+            $query = "SELECT * FROM " . $this->table_name . " WHERE employee_id = :employee_id AND DATE(departure_time) = :today";
+            
+            // Prepare the SQL statement
+            $stmt = $this->conn->prepare($query);
+            
+            // Bind the parameters
+            $stmt->bindParam(':employee_id', $employee_id, PDO::PARAM_INT);
+            $stmt->bindParam(':today', $today, PDO::PARAM_STR);
+    
+            // Execute the query
+            $stmt->execute();
+    
+            // Check if any row exists
+            if ($stmt->rowCount() > 0) {
+                return ["exists" => true]; // Departure time exists for today
+            } else {
+                return ["exists" => false]; // No departure time yet for today
+            }
+        } catch (PDOException $e) {
+            // Handle database errors
+            return ["error" => "Database connection error: " . $e->getMessage()];
+        }
     }    
 
     public function update()

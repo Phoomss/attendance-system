@@ -77,6 +77,7 @@
                             // Reset form and close modal
                             $('#leaveForm')[0].reset();
                             $('#leaveModel').modal('hide');
+                            location.reload()
                         });
                     } else {
                         Swal.fire({

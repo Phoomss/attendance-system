@@ -84,6 +84,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // ส่งผลลัพธ์กลับไปยัง client
             echo json_encode($attendanceStatus);
-        }
+        } else if ($action === "checkDeparture") {
+            $employee_id = $_POST['employee_id'];
+        
+            // เรียกใช้ฟังก์ชัน checkDeparture
+            $departureStatus = $attendance->checkDeparture($employee_id);
+        
+            // ส่งผลลัพธ์กลับไปยัง client
+            echo json_encode($departureStatus);
+        }        
     }
 }

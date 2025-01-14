@@ -80,7 +80,12 @@
                     $('#saveAttendanceBtn').text('บันทึกเวลาเข้างานแล้ว'); // เปลี่ยนข้อความปุ่ม
                     $('#attendance_date').prop('disabled', true); // ปิดช่องกรอกวันที่
                     $('#attendance_time').prop('disabled', true); // ปิดช่องกรอกเวลา
-                    // $('#attendanceModel').modal('hide'); // ปิด modal ถ้ามีการบันทึกเวลาแล้ว
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'ข้อผิดพลาด',
+                        text: 'คุณได้บันทึกเวลาเข้างานแล้วในวันนี้',
+                        confirmButtonText: 'ตกลง',
+                    });
                 } else {
                     $('#saveAttendanceBtn').prop('disabled', false); // เปิดใช้งานปุ่ม
                     $('#saveAttendanceBtn').text('บันทึก'); // เปลี่ยนข้อความปุ่มกลับ

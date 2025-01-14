@@ -18,7 +18,7 @@ $stmt = $conn->prepare("SELECT id,title,firstname,surname, name,username,phone, 
 $stmt->bindParam(':email', $profile->email);
 $stmt->execute();
 $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-// var_dump($userData['id']);
+// var_dump($userData);
 if (!$userData) {
     die("User not found in the database.");
 }

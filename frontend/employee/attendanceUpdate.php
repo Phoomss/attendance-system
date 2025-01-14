@@ -46,7 +46,7 @@ $attendanceUpdate = $attendance->readInfo($id);
                     <div class="mb-3">
                         <label for="departure_time" class="form-label">เวลาออก</label>
                         <input type="time" class="form-control" id="departure_time" name="departure_time"
-                           required>
+                            required>
                     </div>
 
                 </form>
@@ -84,6 +84,46 @@ $attendanceUpdate = $attendance->readInfo($id);
 
     window.onload = checkTimeToShowButton;
 
+    // เมื่อ modal ถูกเปิด
+    document.getElementById('departureModel').addEventListener('shown.bs.modal', function() {
+        // Check if the employee has already recorded a departure time
+        $.ajax({
+            type: "POST",
+            url: "../../api/attendanceApi.php",
+            data: {
+                action: 'checkDeparture',
+                employee_id: $('#employee_id').val(),
+            },
+            dataType: "json",
+            success: function(response) {
+                // If departure time already exists for today
+                if (response.exists) {
+                    // Disable the departure time input field
+                    $('#departure_time').prop('disabled', true);
+                    // Optionally, show a message or change button behavior
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'ข้อผิดพลาด',
+                        text: 'คุณได้บันทึกเวลาออกงานแล้วในวันนี้',
+                        confirmButtonText: 'ตกลง',
+                    });
+                } else {
+                    // Enable the departure time input field if not recorded yet
+                    $('#departure_time').prop('disabled', false);
+                }
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ข้อผิดพลาด',
+                    text: 'เกิดข้อผิดพลาดในการตรวจสอบข้อมูล',
+                    confirmButtonText: 'ตกลง',
+                });
+            }
+        });
+    });
+
+
     // update form
     jQuery(document).ready(function($) {
         $('#saveDepart_time').on('click', function(e) {
@@ -91,7 +131,7 @@ $attendanceUpdate = $attendance->readInfo($id);
 
             var formData = {
                 action: 'update',
-                id:$('#id').val(),
+                id: $('#id').val(),
                 employee_id: $('#employee_id').val(),
                 departure_time: $('#departure_time').val(),
             };
