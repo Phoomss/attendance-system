@@ -138,6 +138,7 @@
                             // Reset form and close modal
                             $('#attendanceForm')[0].reset();
                             $('#attendanceModel').modal('hide');
+                            location.reload()
                         });
                     } else {
                         Swal.fire({

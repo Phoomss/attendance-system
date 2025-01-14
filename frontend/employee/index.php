@@ -3,6 +3,7 @@ session_start();
 require_once '../../server/LineLogin.php';
 require_once '../../server/conn.php';
 require_once '../../server/attendance.php';
+require_once '../../server/detailWork.php';
 
 if (!isset($_SESSION['profile'])) {
     header("location: ../index.php");
@@ -11,14 +12,13 @@ if (!isset($_SESSION['profile'])) {
 
 // ดึงข้อมูลจาก session
 $profile = $_SESSION['profile'];
-// var_dump($profile);
 
 // ดึงข้อมูลผู้ใช้จากฐานข้อมูลโดยใช้ email จาก profile
 $stmt = $conn->prepare("SELECT id,title,firstname,surname, name,username,phone, email, picture, role FROM users WHERE email = :email");
 $stmt->bindParam(':email', $profile->email);
 $stmt->execute();
 $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-
+// var_dump($userData['id']);
 if (!$userData) {
     die("User not found in the database.");
 }
