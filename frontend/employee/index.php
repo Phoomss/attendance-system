@@ -48,14 +48,14 @@ if (!$userData) {
                 <div class="card shadow profile-card text-center">
                     <div class="card-body">
                         <img src="<?php echo htmlspecialchars($userData['picture']); ?>" class="rounded-circle mb-3" alt="Profile Picture">
-                        <h5 class="card-title text-primary">ชื่อ: <?php echo htmlspecialchars($userData['name']); ?></h5>
+                        <h5 class="card-title text-primary">สวัสดี: <?php echo htmlspecialchars($userData['name']); ?></h5>
                         <p class="card-text text-muted">
                             <i class="bi bi-envelope"></i> <?php echo htmlspecialchars($userData['email']); ?>
                         </p>
                         <p class="card-text text-muted">
-                            <i class="bi bi-people"></i> Role: <?php echo htmlspecialchars($userData['role'] === 'employee' ? 'พนักงาน' : ''); ?>
+                            <i class="bi bi-people"></i><?php echo htmlspecialchars($userData['role'] === 'employee' ? 'พนักงาน' : ''); ?>
                         </p>
-                        <a href="#" class="btn btn-outline-primary w-100">แก้ไขข้อมูลส่วนตัว</a>
+                        <a href="profile.php" class="btn btn-outline-primary w-100">แก้ไขข้อมูลส่วนตัว</a>
                     </div>
                 </div>
             </div>

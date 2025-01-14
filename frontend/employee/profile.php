@@ -50,7 +50,7 @@ if (!$userData) {
                             <i class="bi bi-envelope"></i> <?php echo htmlspecialchars($userData['email']); ?>
                         </p>
                         <p class="card-text text-muted">
-                            <i class="bi bi-people"></i> Role: <?php echo htmlspecialchars($userData['role'] === 'employee' ? 'พนักงาน' : 'อื่นๆ'); ?>
+                            <i class="bi bi-people"></i><?php echo htmlspecialchars($userData['role'] === 'employee' ? 'พนักงาน' : 'อื่นๆ'); ?>
                         </p>
                     </div>
                 </div>
