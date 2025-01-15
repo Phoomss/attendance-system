@@ -64,13 +64,13 @@ class User
 
     public function getAllUser()
     {
-        $query = "SELECT * FROM " . $this->table_name;
+        $query = "SELECT * FROM " . $this->table_name . " WHERE role != 'admin'";
         $stmt = $this->conn->prepare($query);
-
+    
         try {
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+    
             return [
                 "success" => true,
                 "data" => $result,
@@ -83,7 +83,7 @@ class User
                 "message" => "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้ทั้งหมด: " . $e->getMessage()
             ];
         }
-    }
+    }    
 
     public function getUserInfo($id)
     {

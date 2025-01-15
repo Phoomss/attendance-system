@@ -9,7 +9,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nitiya shop</title>
+    <title>ระบบเข้าออกงาน</title>
     <?php include_once '../layouts/config/libary.php' ?>
 </head>
 

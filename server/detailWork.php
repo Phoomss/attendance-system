@@ -40,7 +40,7 @@ class DetailWork
                            INNER JOIN " . $this->table_leaves . " l ON u.id = l.employee_id
                            WHERE u.id = :employee_id
                            ORDER BY l.leave_date DESC
-                           LIMIT 5";
+                           ";
             $leaveStmt = $this->conn->prepare($leaveQuery);
             $leaveStmt->bindParam(':employee_id', $employee_id);
             $leaveStmt->execute();
