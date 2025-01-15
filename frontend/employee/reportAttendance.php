@@ -34,7 +34,6 @@ $userData = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$userData) {
     die("User not found.");
 }
-
 // Continue with user data
 $employee_id = $userData['id'];
 

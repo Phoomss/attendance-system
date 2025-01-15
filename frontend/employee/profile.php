@@ -3,7 +3,6 @@ session_start();
 require_once '../../server/LineLogin.php';
 require_once '../../server/conn.php';
 
-// Ensure session variables are set
 if (!isset($_SESSION['profile']) && !isset($_SESSION['userInfo'])) {
     die("Session data is missing.");
 }

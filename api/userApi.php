@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user->surname = $_POST['surname'];
             $user->username = $_POST['username'];
             $user->phone = $_POST['phone'];
+            
 
             $stmt = $user->updateProfile($id);
 
