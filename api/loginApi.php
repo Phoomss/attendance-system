@@ -10,18 +10,22 @@ $db = $database->getConnection();
 $auth = new Auth($db);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $identifier = isset($_POST['identifier']) ? $_POST['identifier'] : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $identifier = trim($_POST['identifier'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-    if ($identifier && $password) {
+    if (!empty($identifier) && !empty($password)) {
         $user_data = $auth->login($identifier, $password);
 
         if ($user_data['success']) {
-            $_SESSION['userInfo'] = $user_data['data'];
-            $_SESSION['user_id'] = $user_data['data']['id'];
-            $_SESSION['username'] = $user_data['data']['username'];
-            $_SESSION['email'] = $user_data['data']['email'];
-            $_SESSION['role'] = $user_data['data']['role'];
+            session_regenerate_id(true); // ป้องกัน Session Fixation
+
+            // เก็บเฉพาะข้อมูลสำคัญ
+            $_SESSION['userInfo'] = [
+                'id' => $user_data['data']['id'],
+                'username' => $user_data['data']['username'],
+                'email' => $user_data['data']['email'],
+                'role' => $user_data['data']['role'],
+            ];
 
             echo json_encode([
                 "success" => true,
@@ -33,15 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode([
                 "success" => false,
                 "message" => $user_data['message'],
-                "status_code" => 500,
+                "status_code" => 401,
             ]);
         }
     } else {
         echo json_encode([
             "success" => false,
             "message" => "กรุณากรอกข้อมูลให้ครบถ้วน",
-            "status_code" => 500,
+            "status_code" => 400,
         ]);
     }
 }
-?>
+

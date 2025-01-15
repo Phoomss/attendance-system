@@ -5,22 +5,34 @@ require_once '../../server/conn.php';
 require_once '../../server/attendance.php';
 require_once '../../server/detailWork.php';
 
-if (!isset($_SESSION['profile'])) {
-    header("location: ../index.php");
-    exit();
+// Ensure session variables are set
+if (!isset($_SESSION['profile']) && !isset($_SESSION['userInfo'])) {
+    die("Session data is missing.");
 }
 
-// ดึงข้อมูลจาก session
-$profile = $_SESSION['profile'];
+$profile = isset($_SESSION['profile']) ? $_SESSION['profile'] : null;
+$userInfo = isset($_SESSION['userInfo']) ? $_SESSION['userInfo'] : null;
 
-// ดึงข้อมูลผู้ใช้จากฐานข้อมูลโดยใช้ email จาก profile
-$stmt = $conn->prepare("SELECT id,title,firstname,surname, name,username,phone, email, picture, role FROM users WHERE email = :email");
-$stmt->bindParam(':email', $profile->email);
+// Determine which email to use
+if ($profile && isset($profile->email)) {
+    $user_sesstion = $profile->email; // Use email from profile object
+} else {
+    $user_sesstion = $userInfo['email']; // Use email from userInfo array
+}
+
+// Check if user_sesstion contains an email
+if (!$user_sesstion) {
+    die("No email found in session data.");
+}
+
+// Fetch user data from database using email
+$stmt = $conn->prepare("SELECT id, title, firstname, surname, name, username, phone, email, picture, role FROM users WHERE email = :email");
+$stmt->bindParam(':email', $user_sesstion);
 $stmt->execute();
 $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-// var_dump($userData);
+
 if (!$userData) {
-    die("User not found in the database.");
+    die("User not found.");
 }
 ?>
 

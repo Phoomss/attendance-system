@@ -149,7 +149,6 @@ if (!isset($_SESSION['profile'])) {
                 e.preventDefault();
                 var identifier = $('#identifier').val();
                 var password = $('#password').val();
-
                 $.ajax({
                     type: 'POST',
                     url: './api/loginApi.php',
