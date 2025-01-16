@@ -75,7 +75,7 @@ if (!$userData) {
                         <h5 class="card-title mb-3">ข้อมูลส่วนตัว</h5>
                         <form id="profileForm">
                             <div class="mb-3">
-                                <!-- <p><?php echo htmlspecialchars($userData['id']) ?></p> -->
+                                <input type="hidden" name="id" value="<?= htmlspecialchars($userData['id']); ?>">
                                 <label for="title" class="form-label">คำนำหน้า</label>
                                 <select class="form-select" id="title" name="title" required>
                                     <option value="นาย" <?php echo ($userData['title'] === 'นาย') ? 'selected' : ''; ?>>นาย</option>
@@ -99,8 +99,16 @@ if (!$userData) {
                                 <input type="text" class="form-control" id="username" name="username" placeholder="ชื่อผู้ใช้งาน" value="<?php echo htmlspecialchars($userData['username']) ?>" required>
                             </div>
                             <div class="mb-3">
+                                <label for="email" class="form-label">อีเมล</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="อีเมล" value="<?php echo htmlspecialchars($userData['email']) ?>" required>
+                            </div>
+                            <div class="mb-3">
                                 <label for="phone" class="form-label">เบอร์โทร</label>
                                 <input type="text" class="form-control" id="phone" name="phone" placeholder="เบอร์โทร" value="<?php echo htmlspecialchars($userData['phone']) ?>" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">รหัสผ่าน</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="กรุณากรอกรหัสผ่าน (ถ้ามี)">
                             </div>
                             <button type="submit" class="btn btn-primary w-100">บันทึกข้อมูล</button>
                         </form>
@@ -115,15 +123,17 @@ if (!$userData) {
                 e.preventDefault();
 
                 var formData = {
-                    action: 'updateProfile',
-                    id: "<?php echo htmlspecialchars($userData['id']); ?>",
-                    title: $('#title').val(),
-                    firstname: $('#firstname').val(),
-                    surname: $('#surname').val(),
-                    username: $('#username').val(),
-                    phone: $('#phone').val()
+                    action: 'update',
+                    id: $("input[name='id']").val(),
+                    title: $("#title").val(),
+                    firstname: $("#firstname").val(),
+                    surname: $("#surname").val(),
+                    username: $("#username").val(),
+                    phone: $("#phone").val(),
+                    email: $("#email").val(),
+                    password: $("#password").val() || null,
                 };
-                console.log(formData)
+
                 $.ajax({
                     type: "POST",
                     url: "../../api/userApi.php",
@@ -132,31 +142,30 @@ if (!$userData) {
                     success: function(response) {
                         if (response.success) {
                             Swal.fire({
-                                icon: 'success',
-                                title: 'สำเร็จ',
+                                title: 'สำเร็จ!',
                                 text: response.message,
-                                confirmButtonText: 'ตกลง'
+                                icon: 'success',
+                            }).then(() => {
+                                window.location.reload(); // Reload page after success
                             });
                         } else {
                             Swal.fire({
-                                icon: 'error',
-                                title: 'ข้อผิดพลาด',
+                                title: 'ข้อผิดพลาด!',
                                 text: response.message,
-                                confirmButtonText: 'ตกลง'
+                                icon: 'error',
                             });
                         }
                     },
                     error: function() {
                         Swal.fire({
+                            title: 'ข้อผิดพลาด!',
+                            text: 'ไม่สามารถส่งข้อมูลได้',
                             icon: 'error',
-                            title: 'ข้อผิดพลาด',
-                            text: 'เกิดข้อผิดพลาดในการส่งข้อมูล',
-                            confirmButtonText: 'ตกลง'
                         });
                     }
-
                 });
             });
+
         });
     </script>
 </body>

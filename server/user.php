@@ -118,58 +118,61 @@ class User
         }
     }
 
-    public function updateProfile($id)
-    {
-        $query = "UPDATE " . $this->table_name . " 
-                  SET title = :title, 
-                      firstname = :firstname, 
-                      surname = :surname, 
-                      username = :username, 
-                      phone = :phone";
+    // public function updateProfile($id)
+    // {
+    //     $query = "UPDATE " . $this->table_name . " 
+    //               SET title = :title, 
+    //                   firstname = :firstname, 
+    //                   surname = :surname, 
+    //                   username = :username, 
+    //                   phone = :phone
+    //                   email = :email";
 
-        if (!empty($this->password)) {
-            $query .= ", password = :password";
-        }
+    //     if (!empty($this->password)) {
+    //         $query .= ", password = :password";
+    //     }
 
-        $query .= " WHERE id = :id";
+    //     $query .= " WHERE id = :id";
 
-        $stmt = $this->conn->prepare($query);
+    //     $stmt = $this->conn->prepare($query);
 
-        $stmt->bindParam(':title', $this->title);
-        $stmt->bindParam(':firstname', $this->firstname);
-        $stmt->bindParam(':surname', $this->surname);
-        $stmt->bindParam(':username', $this->username);
-        $stmt->bindParam(':phone', $this->phone);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    //     $stmt->bindParam(':title', $this->title);
+    //     $stmt->bindParam(':firstname', $this->firstname);
+    //     $stmt->bindParam(':surname', $this->surname);
+    //     $stmt->bindParam(':username', $this->username);
+    //     $stmt->bindParam(':phone', $this->phone);
+    //     $stmt->bindParam(":email", $this->email);
+    //     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-        if (!empty($this->password)) {
-            $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
-            $stmt->bindParam(':password', $hashedPassword);
-        }
+    //     if (!empty($this->password)) {
+    //         $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
+    //         $stmt->bindParam(':password', $hashedPassword);
+    //     }
 
-        try {
-            if ($stmt->execute()) {
-                http_response_code(200);
-                return [
-                    "success" => true,
-                    "message" => "อัปเดตโปรไฟล์สำเร็จ"
-                ];
-            }
+    //     try {
+    //         if ($stmt->execute()) {
+    //             http_response_code(200);
+    //             return [
+    //                 "success" => true,
+    //                 "message" => "อัปเดตโปรไฟล์สำเร็จ"
+    //             ];
+    //         }
 
-            error_log("Update profile error: " . implode(" ", $stmt->errorInfo()));
-            return [
-                "success" => false,
-                "message" => "ไม่สามารถอัปเดตโปรไฟล์ได้"
-            ];
-        } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
-            http_response_code(500);
-            return [
-                "success" => false,
-                "message" => "เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์: " . $e->getMessage()
-            ];
-        }
-    }
+    //         error_log("Update profile error: " . implode(" ", $stmt->errorInfo()));
+    //         return [
+    //             "success" => false,
+    //             "message" => "ไม่สามารถอัปเดตโปรไฟล์ได้"
+    //         ];
+    //     } catch (PDOException $e) {
+    //         error_log("Database error: " . $e->getMessage());
+    //         http_response_code(500);
+    //         return [
+    //             "success" => false,
+    //             "message" => "เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์: " . $e->getMessage()
+    //         ];
+    //     }
+    // }
+
 
     public function update($id)
     {
@@ -194,7 +197,7 @@ class User
         $stmt->bindParam(':surname', $this->surname);
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':phone', $this->phone);
-        $stmt->bindParam(":email",$this->email);
+        $stmt->bindParam(":email", $this->email);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         if (!empty($this->password)) {
