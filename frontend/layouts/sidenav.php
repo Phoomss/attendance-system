@@ -36,18 +36,18 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <hr class="sidebar-divider">
 
     <!-- Nav Item - User List -->
-    <li class="nav-item <?= ($current_page == 'login.html' || $current_page == 'register.html') ? 'active' : '' ?>">
+    <li class="nav-item <?= ($current_page == 'userAll.php' || $current_page == 'profile.php') ? 'active' : '' ?>">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsUser"
            aria-expanded="true" aria-controls="collapsUser">
             <i class="fas fa-fw fa-folder"></i>
             <span>รายการผู้ใช้งาน</span>
         </a>
-        <div id="collapsUser" class="collapse <?= ($current_page == 'login.html' || $current_page == 'register.html') ? 'show' : '' ?>"
+        <div id="collapsUser" class="collapse <?= ($current_page == 'userAll.php' || $current_page == 'profile.php') ? 'show' : '' ?>"
              aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">รายการพนักงาน:</h6>
-                <a class="collapse-item <?= $current_page == 'login.html' ? 'active' : '' ?>" href="login.html">จัดการข้อมูลพนักงาน</a>
-                <a class="collapse-item <?= $current_page == 'register.html' ? 'active' : '' ?>" href="register.html">จัดการข้อมูลส่วนตัว</a>
+                <a class="collapse-item <?= $current_page == 'userAll.php' ? 'active' : '' ?>" href="userAll.php">จัดการข้อมูลพนักงาน</a>
+                <a class="collapse-item <?= $current_page == 'profile.php' ? 'active' : '' ?>" href="profile.php">จัดการข้อมูลส่วนตัว</a>
             </div>
         </div>
     </li>

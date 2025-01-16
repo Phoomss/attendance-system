@@ -66,11 +66,11 @@ class User
     {
         $query = "SELECT * FROM " . $this->table_name . " WHERE role != 'admin'";
         $stmt = $this->conn->prepare($query);
-    
+
         try {
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
             return [
                 "success" => true,
                 "data" => $result,
@@ -83,7 +83,7 @@ class User
                 "message" => "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้ทั้งหมด: " . $e->getMessage()
             ];
         }
-    }    
+    }
 
     public function getUserInfo($id)
     {
@@ -125,27 +125,27 @@ class User
                       surname = :surname, 
                       username = :username, 
                       phone = :phone";
-    
+
         if (!empty($this->password)) {
             $query .= ", password = :password";
         }
-    
+
         $query .= " WHERE id = :id";
-    
+
         $stmt = $this->conn->prepare($query);
-    
+
         $stmt->bindParam(':title', $this->title);
         $stmt->bindParam(':firstname', $this->firstname);
         $stmt->bindParam(':surname', $this->surname);
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':phone', $this->phone);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    
+
         if (!empty($this->password)) {
             $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
             $stmt->bindParam(':password', $hashedPassword);
-        }       
-    
+        }
+
         try {
             if ($stmt->execute()) {
                 http_response_code(200);
@@ -154,7 +154,7 @@ class User
                     "message" => "อัปเดตโปรไฟล์สำเร็จ"
                 ];
             }
-    
+
             error_log("Update profile error: " . implode(" ", $stmt->errorInfo()));
             return [
                 "success" => false,
@@ -168,7 +168,7 @@ class User
                 "message" => "เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์: " . $e->getMessage()
             ];
         }
-    }    
+    }
 
     public function update($id)
     {
@@ -229,8 +229,8 @@ class User
     public function delete($id)
     {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
-
         $stmt = $this->conn->prepare($query);
+
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         try {
@@ -239,18 +239,18 @@ class User
                     "success" => true,
                     "message" => "ลบข้อมูลผู้ใช้สำเร็จ"
                 ];
+            } else {
+                error_log("Delete error: " . implode(" ", $stmt->errorInfo()));
+                return [
+                    "success" => false,
+                    "message" => "ไม่สามารถลบข้อมูลผู้ใช้ได้"
+                ];
             }
-
-            error_log("Delete error: " . implode(" ", $stmt->errorInfo()));
-            return [
-                "success" => false,
-                "message" => "ไม่สามารถลบข้อมูลผู้ใช้ได้"
-            ];
         } catch (PDOException $e) {
             error_log("Database error: " . $e->getMessage());
             return [
                 "success" => false,
-                "message" => "เกิดข้อผิดพลาดในการลบข้อมูล: " . $e->getMessage()
+                "message" => "เกิดข้อผิดพลาด: " . $e->getMessage()
             ];
         }
     }

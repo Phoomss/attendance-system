@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user->surname = $_POST['surname'];
             $user->username = $_POST['username'];
             $user->phone = $_POST['phone'];
-            
+
 
             $stmt = $user->updateProfile($id);
 
@@ -78,20 +78,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
             }
         } else if ($action === 'delete') {
-            $user->id = $_POST['id'];
-            $stmt = $user->delete($id);
-
-            if ($stmt) {
-                echo json_encode([
-                    "success" => true,
-                    "message" => "ลบข้อมูลสำเร็จ",
-                    "status_code" => 200,
-                ]);
+            $id = $_POST['id']; // ตรวจสอบว่ามีการส่ง id มา
+            if (!empty($id)) {
+                $result = $user->delete($id);
+                if ($result['success']) {
+                    echo json_encode([
+                        "status" => "success",
+                        "message" => $result['message'],
+                    ]);
+                } else {
+                    echo json_encode([
+                        "status" => "error",
+                        "message" => $result['message'],
+                    ]);
+                }
             } else {
                 echo json_encode([
-                    "success" => false,
-                    "message" => "ลบข้อมูลไม่สำเร็จ",
-                    "status_code" => 500,
+                    "status" => "error",
+                    "message" => "ไม่มี ID ที่ต้องการลบ",
                 ]);
             }
         }
