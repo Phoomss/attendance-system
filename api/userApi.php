@@ -13,91 +13,93 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action = $_POST['action'];
 
         if ($action === 'update') {
-            if (!isset($_POST['id'])) {
-                echo json_encode([
-                    "success" => false,
-                    "message" => "ไม่ได้ระบุ ID ของผู้ใช้",
-                    "status_code" => 400,
-                ]);
-                exit;
-            }
-
             $id = $_POST['id'];
             $user->title = $_POST['title'];
             $user->firstname = $_POST['firstname'];
             $user->surname = $_POST['surname'];
             $user->username = $_POST['username'];
             $user->phone = $_POST['phone'];
+            $user->email = $_POST['email'];
+
+            if (!empty($_POST['password'])) {
+                $user->password = $_POST['password'];
+            }
 
             $stmt = $user->update($id);
 
-            if ($stmt) {
+            if ($stmt['success']) {
                 echo json_encode([
                     "success" => true,
-                    "message" => "แก้ไขข้อมูลสำเร็จ",
+                    "message" => $stmt['message'],
                     "status_code" => 200,
                 ]);
             } else {
                 echo json_encode([
                     "success" => false,
-                    "message" => "แก้ไขข้อมูลไม่สำเร็จ",
+                    "message" => $stmt['message'],
                     "status_code" => 500,
                 ]);
             }
-        } else if ($action === 'updateProfile') {
-            if (!isset($_POST['id'])) {
+        } else {
+            echo json_encode([
+                "success" => false,
+                "message" => "แก้ไขข้อมูลไม่สำเร็จ",
+                "status_code" => 500,
+            ]);
+        }
+    } else if ($action === 'updateProfile') {
+        if (!isset($_POST['id'])) {
+            echo json_encode([
+                "success" => false,
+                "message" => "ไม่ได้ระบุ ID ของผู้ใช้",
+                "status_code" => 400,
+            ]);
+            exit;
+        }
+
+        $id = $_POST['id'];
+        $user->title = $_POST['title'];
+        $user->firstname = $_POST['firstname'];
+        $user->surname = $_POST['surname'];
+        $user->username = $_POST['username'];
+        $user->phone = $_POST['phone'];
+
+
+        $stmt = $user->updateProfile($id);
+
+        if ($stmt) {
+            echo json_encode([
+                "success" => true,
+                "message" => "แก้ไขข้อมูลส่วนตัวสำเร็จ",
+                "status_code" => 200,
+            ]);
+        } else {
+            echo json_encode([
+                "success" => false,
+                "message" => "แก้ไขข้อมูลส่วนตัวไม่สำเร็จ",
+                "status_code" => 500,
+            ]);
+        }
+    } else if ($action === 'delete') {
+        $id = $_POST['id']; // ตรวจสอบว่ามีการส่ง id มา
+        if (!empty($id)) {
+            $result = $user->delete($id);
+            if ($result['success']) {
                 echo json_encode([
-                    "success" => false,
-                    "message" => "ไม่ได้ระบุ ID ของผู้ใช้",
-                    "status_code" => 400,
+                    "status" => "success",
+                    "message" => $result['message'],
                 ]);
-                exit;
-            }
-
-            $id = $_POST['id'];
-            $user->title = $_POST['title'];
-            $user->firstname = $_POST['firstname'];
-            $user->surname = $_POST['surname'];
-            $user->username = $_POST['username'];
-            $user->phone = $_POST['phone'];
-
-
-            $stmt = $user->updateProfile($id);
-
-            if ($stmt) {
-                echo json_encode([
-                    "success" => true,
-                    "message" => "แก้ไขข้อมูลส่วนตัวสำเร็จ",
-                    "status_code" => 200,
-                ]);
-            } else {
-                echo json_encode([
-                    "success" => false,
-                    "message" => "แก้ไขข้อมูลส่วนตัวไม่สำเร็จ",
-                    "status_code" => 500,
-                ]);
-            }
-        } else if ($action === 'delete') {
-            $id = $_POST['id']; // ตรวจสอบว่ามีการส่ง id มา
-            if (!empty($id)) {
-                $result = $user->delete($id);
-                if ($result['success']) {
-                    echo json_encode([
-                        "status" => "success",
-                        "message" => $result['message'],
-                    ]);
-                } else {
-                    echo json_encode([
-                        "status" => "error",
-                        "message" => $result['message'],
-                    ]);
-                }
             } else {
                 echo json_encode([
                     "status" => "error",
-                    "message" => "ไม่มี ID ที่ต้องการลบ",
+                    "message" => $result['message'],
                 ]);
             }
+        } else {
+            echo json_encode([
+                "status" => "error",
+                "message" => "ไม่มี ID ที่ต้องการลบ",
+            ]);
         }
     }
 }

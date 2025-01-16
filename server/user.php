@@ -11,6 +11,7 @@ class User
     public $surname;
     public $username;
     public $phone;
+    public $email;
     public $password;
 
     public function __construct()
@@ -172,28 +173,19 @@ class User
 
     public function update($id)
     {
-        // ตรวจสอบว่ามีผู้ใช้ที่ระบุหรือไม่
-        $queryCheck = "SELECT COUNT(*) FROM " . $this->table_name . " WHERE id = :id";
-        $stmtCheck = $this->conn->prepare($queryCheck);
-        $stmtCheck->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmtCheck->execute();
-        $rowCount = $stmtCheck->fetchColumn();
+        $query = "UPDATE " . $this->table_name . " 
+        SET title = :title, 
+            firstname = :firstname, 
+            surname = :surname, 
+            username = :username, 
+            phone = :phone,
+            email = :email";
 
-        if ($rowCount == 0) {
-            return [
-                "success" => false,
-                "message" => "ไม่พบข้อมูลผู้ใช้ที่ระบุ"
-            ];
+        if (!empty($this->password)) {
+            $query .= ", password = :password";
         }
 
-        // ทำการอัปเดตข้อมูล
-        $query = "UPDATE " . $this->table_name . " 
-                  SET title = :title, 
-                      firstname = :firstname, 
-                      surname = :surname, 
-                      username = :username, 
-                      phone = :phone 
-                  WHERE id = :id";
+        $query .= " WHERE id = :id";
 
         $stmt = $this->conn->prepare($query);
 
@@ -202,26 +194,34 @@ class User
         $stmt->bindParam(':surname', $this->surname);
         $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':phone', $this->phone);
+        $stmt->bindParam(":email",$this->email);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        if (!empty($this->password)) {
+            $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
+            $stmt->bindParam(':password', $hashedPassword);
+        }
 
         try {
             if ($stmt->execute()) {
+                http_response_code(200);
                 return [
                     "success" => true,
-                    "message" => "อัปเดตข้อมูลผู้ใช้สำเร็จ"
+                    "message" => "อัปเดตโปรไฟล์สำเร็จ"
                 ];
             }
 
-            error_log("Update error: " . implode(" ", $stmt->errorInfo()));
+            error_log("Update profile error: " . implode(" ", $stmt->errorInfo()));
             return [
                 "success" => false,
-                "message" => "ไม่สามารถอัปเดตข้อมูลผู้ใช้ได้"
+                "message" => "ไม่สามารถอัปเดตโปรไฟล์ได้"
             ];
         } catch (PDOException $e) {
             error_log("Database error: " . $e->getMessage());
+            http_response_code(500);
             return [
                 "success" => false,
-                "message" => "เกิดข้อผิดพลาดในการอัปเดตข้อมูล: " . $e->getMessage()
+                "message" => "เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์: " . $e->getMessage()
             ];
         }
     }
