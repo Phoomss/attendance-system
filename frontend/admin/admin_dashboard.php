@@ -20,11 +20,11 @@ require_once '../../server/detailWork.php';
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column w-100">
-            <!-- Main Content -->
+            <!-- Main Content -->  <?php include_once '../layouts/navbar.php' ?>
             <div id="content" class="container-fluid">
 
                 <!-- Navigation Bar -->
-                <?php include_once '../layouts/navbar.php' ?>
+              
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -59,6 +59,17 @@ require_once '../../server/detailWork.php';
                             </div>
                             <div class="card-body">
                                 <canvas id="attendanceByMonth" width="100%" height="50"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-12 mb-4">
+                        <div class="card shadow">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">จํานวนการเข้างานรายเดือนตามพนักงาน</h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="leaveChart" width="400" height="200"></canvas>
                             </div>
                         </div>
                     </div>
@@ -202,6 +213,68 @@ require_once '../../server/detailWork.php';
         function getRandomColor() {
             return `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.7)`;
         }
+    </script>
+
+    <script>
+        fetch('../../api/leaveCountApi.php')
+            .then(response => response.json())
+            .then(data => {
+                const months = data.months;
+                const sickLeaveCounts = data.sickLeaveCounts;
+                const personalLeaveCounts = data.personalLeaveCounts;
+
+                // สร้างกราฟ
+                const ctx = document.getElementById('leaveChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                                label: 'ลาป่วย',
+                                data: sickLeaveCounts,
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'ลากิจ',
+                                data: personalLeaveCounts,
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            },
+                            title: {
+                                display: true,
+                                text: 'จำนวนการลา'
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'เดือน'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'จำนวนการลา'
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
     </script>
 
 </body>
