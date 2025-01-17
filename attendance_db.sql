@@ -1,73 +1,152 @@
-drop table users;
-drop table attendances;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Jan 17, 2025 at 06:47 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.0.30
 
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(10),
-    firstname VARCHAR(100),
-    surname VARCHAR(100),
-    name VARCHAR(200),
-    username varchar(255) unique,
-    phone varchar(10) unique,
-    email VARCHAR(255) UNIQUE,
-    password varchar(255),
-    role enum('admin','employee') default 'employee',
-    picture VARCHAR(255),
-    access_token TEXT,
-    refresh_token TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-select * from users u 
-
-drop table attendances ;
-CREATE TABLE attendances (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    employee_id INT NOT NULL,
-    attendance_date DATE not null,
-    attendance_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
-    departure_time TIMESTAMP null,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (employee_id) REFERENCES users(id)
-);
-
-drop table leaves ;
-CREATE TABLE leaves (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    employee_id INT NOT NULL,
-    leave_type ENUM('ลาป่วย', 'ลากิจ') NOT NULL,
-    leave_date DATE NOT NULL,
-    reason TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (employee_id) REFERENCES users(id)
-); 
-
-select * from attendances a ;
-SELECT * 
-FROM attendances a
-WHERE employee_id = 1 AND attendance_date = "2025-01-17";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
 
-select * from users;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
-SELECT id, email , password, role from users WHERE email = 'admin@adminl.com' LIMIT 1
+--
+-- Database: `attendance_db`
+--
 
-SELECT 
-    u.id AS user_id,
-    u.name AS user_name,
-    a.attendance_time,
-    a.departure_time,
-    l.leave_type,
-    l.leave_date,
-    l.reason
-FROM 
-    users u
-LEFT JOIN 
-    attendances a 
-ON 
-    u.id = a.employee_id
-LEFT JOIN 
-    leaves l 
-ON 
-    u.id = l.employee_id;
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `attendances`
+--
+
+CREATE TABLE `attendances` (
+  `id` int(11) NOT NULL,
+  `employee_id` int(11) NOT NULL,
+  `attendance_date` date NOT NULL,
+  `attendance_time` timestamp NOT NULL DEFAULT current_timestamp(),
+  `departure_time` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `leaves`
+--
+
+CREATE TABLE `leaves` (
+  `id` int(11) NOT NULL,
+  `employee_id` int(11) NOT NULL,
+  `leave_type` enum('ลาป่วย','ลากิจ') NOT NULL,
+  `leave_date` date NOT NULL,
+  `reason` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `title` varchar(10) DEFAULT NULL,
+  `firstname` varchar(100) DEFAULT NULL,
+  `surname` varchar(100) DEFAULT NULL,
+  `name` varchar(200) DEFAULT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `phone` varchar(10) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `role` enum('admin','employee') DEFAULT 'employee',
+  `picture` varchar(255) DEFAULT NULL,
+  `access_token` text DEFAULT NULL,
+  `refresh_token` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `title`, `firstname`, `surname`, `name`, `username`, `phone`, `email`, `password`, `role`, `picture`, `access_token`, `refresh_token`, `created_at`) VALUES
+(1, 'Mr.', 'Admin', 'System', NULL, 'admin', NULL, 'admin@admin.com', '$2y$10$LlGHDb589U6y9n0XjwvGBuzlRmdXjy3Sjv0c8le13UG8MK8Ct.JGi', 'admin', NULL, NULL, NULL, '2025-01-17 17:44:41');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `attendances`
+--
+ALTER TABLE `attendances`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `employee_id` (`employee_id`);
+
+--
+-- Indexes for table `leaves`
+--
+ALTER TABLE `leaves`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `employee_id` (`employee_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `phone` (`phone`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `attendances`
+--
+ALTER TABLE `attendances`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `leaves`
+--
+ALTER TABLE `leaves`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `attendances`
+--
+ALTER TABLE `attendances`
+  ADD CONSTRAINT `attendances_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `leaves`
+--
+ALTER TABLE `leaves`
+  ADD CONSTRAINT `leaves_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `users` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
