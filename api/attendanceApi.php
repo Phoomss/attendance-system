@@ -13,13 +13,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action = $_POST['action'];
 
         if ($action === 'create') {
+            // ตรวจสอบข้อมูลจาก POST
+            if (empty($_POST['employee_id']) || empty($_POST['attendance_date']) || empty($_POST['attendance_time'])) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "กรุณากรอกข้อมูลให้ครบถ้วน",
+                    "status_code" => 400,
+                ]);
+                exit();
+            }
+
             $attendance->employee_id = $_POST['employee_id'];
             $attendance->attendance_date = $_POST['attendance_date'];
             $attendance->attendance_time = $_POST['attendance_time'];
-            // $attendance->departure_time = $_POST['departure_time'];
 
+            // สร้างเวลาที่ถูกต้อง
+            $formatted_attendance_time = $_POST['attendance_date'] . ' ' . $_POST['attendance_time'];
+            $attendance->attendance_time = $formatted_attendance_time;
+
+            // บันทึกข้อมูล
             $stmt = $attendance->create();
 
+            // ตรวจสอบผลลัพธ์
             if ($stmt) {
                 echo json_encode([
                     "success" => true,
@@ -86,12 +101,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode($attendanceStatus);
         } else if ($action === "checkDeparture") {
             $employee_id = $_POST['employee_id'];
-        
+
             // เรียกใช้ฟังก์ชัน checkDeparture
             $departureStatus = $attendance->checkDeparture($employee_id);
-        
+
             // ส่งผลลัพธ์กลับไปยัง client
             echo json_encode($departureStatus);
-        }        
+        }
     }
 }

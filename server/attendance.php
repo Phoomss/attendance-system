@@ -33,7 +33,6 @@ class Attendance
         $stmt->bindParam(':employee_id', $this->employee_id, PDO::PARAM_INT);
         $stmt->bindParam(':attendance_date', $this->attendance_date, PDO::PARAM_STR);
         $stmt->bindParam(':attendance_time', $this->attendance_time, PDO::PARAM_STR);
-        $stmt->bindParam(':attendance_time', $this->attendance_time, PDO::PARAM_STR);
 
         // ป้องกันข้อผิดพลาดในการ execute
         try {
