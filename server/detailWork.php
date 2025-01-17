@@ -206,7 +206,6 @@ class DetailWork
         }
     }
 
-
     public function getLeaveCountByDate()
     {
         try {
@@ -244,5 +243,4 @@ class DetailWork
         }
     }
 
- 
 }
