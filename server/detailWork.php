@@ -123,4 +123,126 @@ class DetailWork
             return false;
         }
     }
+
+    public function getDailyAttendanceCount()
+    {
+        try {
+            // ดึงวันที่จากเครื่องในรูปแบบ 'YYYY-MM-DD'
+            $currentDate = date('Y-m-d');
+
+            // สร้างคำสั่ง SQL เพื่อดึงข้อมูลการเข้าทำงานในวันปัจจุบัน
+            $query = "
+                SELECT 
+                    a.attendance_date,
+                    COUNT(*) AS total_attendances
+                FROM 
+                    " . $this->table_attendances . " a
+                WHERE 
+                    a.attendance_date = :currentDate
+                GROUP BY 
+                    a.attendance_date
+            ";
+
+            // เตรียมคำสั่ง SQL
+            $stmt = $this->conn->prepare($query);
+
+            // Binding พารามิเตอร์สำหรับวันที่ปัจจุบัน
+            $stmt->bindParam(':currentDate', $currentDate, PDO::PARAM_STR);
+
+            // ดำเนินการคำสั่ง SQL
+            $stmt->execute();
+
+            // ดึงข้อมูลผลลัพธ์
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // ส่งคืนผลลัพธ์
+            return $result;
+        } catch (Exception $e) {
+            // จัดการข้อผิดพลาด
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+
+    public function getDailyDepartureCount()
+    {
+        try {
+            // ใช้วันที่ของเครื่อง (NOW()) เพื่อคำนวณจำนวนการออกจากงานในวันนี้
+            $query = "
+                SELECT 
+                    a.attendance_date,
+                    COUNT(*) AS total_departures
+                FROM 
+                    " . $this->table_attendances . " a
+                WHERE 
+                    a.attendance_date = CURDATE()  -- ใช้วันที่ของเครื่อง
+                    AND a.departure_time IS NOT NULL
+                GROUP BY 
+                    a.attendance_date
+            ";
+
+            // เตรียม statement
+            $stmt = $this->conn->prepare($query);
+
+            // ดำเนินการคำสั่ง SQL
+            $stmt->execute();
+
+            // ดึงข้อมูลผลลัพธ์
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // ตรวจสอบหากมีข้อมูล
+            if ($result) {
+                // ส่งคืนจำนวนการออกจากงาน
+                return $result['total_departures'];
+            } else {
+                // หากไม่มีข้อมูลคืนค่า 0
+                return 0;
+            }
+        } catch (Exception $e) {
+            // จัดการข้อผิดพลาด
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+
+    public function getLeaveCountByDate()
+    {
+        try {
+            // ใช้วันที่ของเครื่อง (NOW()) เพื่อแยกประเภทการลา
+            $query = "
+                SELECT 
+                    leave_date,
+                    COUNT(CASE WHEN leave_type = 'ลาป่วย' THEN 1 END) AS sick_leave_count,
+                    COUNT(CASE WHEN leave_type = 'ลากิจ' THEN 1 END) AS personal_leave_count
+                FROM 
+                    " . $this->table_leaves . "
+                WHERE 
+                    leave_date = CURDATE()  -- ใช้วันที่ของเครื่อง
+                GROUP BY 
+                    leave_date
+                ORDER BY 
+                    leave_date DESC
+            ";
+
+            // เตรียมคำสั่ง SQL
+            $stmt = $this->conn->prepare($query);
+
+            // ดำเนินการคำสั่ง SQL
+            $stmt->execute();
+
+            // ดึงข้อมูลที่ได้มา
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // ส่งคืนข้อมูลผลลัพธ์
+            return $result;
+        } catch (Exception $e) {
+            // จัดการข้อผิดพลาด
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+ 
 }
