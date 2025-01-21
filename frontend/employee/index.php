@@ -58,14 +58,39 @@ if (!$userData) {
             <!-- User Profile Section -->
             <div class="col-lg-4 mb-4">
                 <div class="card shadow profile-card text-center">
+
+                    <?php
+                    // ตรวจสอบว่ามีข้อมูลใน $userData หรือไม่
+                    $defaultImage = "user2.png";
+                    $profilePicture = isset($userData['picture']) && !empty($userData['picture']) ? htmlspecialchars($userData['picture']) : $defaultImage;
+
+                    // ตรวจสอบชื่อผู้ใช้
+                    $name = isset($userData['title'], $userData['firstname'], $userData['surname'])
+                        ? htmlspecialchars($userData['title'] . $userData['firstname'] . ' ' . $userData['surname'])
+                        : htmlspecialchars($userData['name']);
+
+                    // ตรวจสอบอีเมล
+                    $email = isset($userData['email']) ? htmlspecialchars($userData['email']) : "ไม่มีอีเมล";
+
+                    // ตรวจสอบบทบาทผู้ใช้
+                    $role = isset($userData['role'])
+                        ? ($userData['role'] === 'employee' ? 'พนักงาน' : 'อื่นๆ')
+                        : 'ไม่ระบุบทบาท';
+                    ?>
                     <div class="card-body">
-                        <img src="<?php echo htmlspecialchars($userData['picture']); ?>" class="rounded-circle mb-3" alt="Profile Picture">
-                        <h5 class="card-title text-primary">สวัสดี: <?php echo htmlspecialchars($userData['name']); ?></h5>
+                        <img src="<?php echo $profilePicture; ?>" class="rounded-circle mb-3" alt="Profile Picture" style="width: 120px; height: 120px;">
+
+                        <!-- แสดงชื่อ -->
+                        <h5 class="card-title text-primary"><?php echo $name; ?></h5>
+
+                        <!-- แสดงอีเมล -->
                         <p class="card-text text-muted">
-                            <i class="bi bi-envelope"></i> <?php echo htmlspecialchars($userData['email']); ?>
+                            <i class="bi bi-envelope"></i> <?php echo $email; ?>
                         </p>
+
+                        <!-- แสดงบทบาท -->
                         <p class="card-text text-muted">
-                            <i class="bi bi-people"></i><?php echo htmlspecialchars($userData['role'] === 'employee' ? 'พนักงาน' : ''); ?>
+                            <i class="bi bi-people"></i> <?php echo $role; ?>
                         </p>
                         <a href="profile.php" class="btn btn-outline-primary w-100">แก้ไขข้อมูลส่วนตัว</a>
                     </div>
